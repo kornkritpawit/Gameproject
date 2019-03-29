@@ -1,5 +1,5 @@
 import arcade
-from change.mod import World
+from template.mod import World
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
 
@@ -29,13 +29,18 @@ class gamewindow(arcade.Window):
         self.wood_sprite = ModelSprite('images/wood1.png',model=self.world.wood)
 
     # def update(self,delta):
+
+    def on_key_press(self, key, key_modifiers):
+        self.world.on_key_press(key, key_modifiers)
+
+    def update(self, delta):
+        self.world.update(delta)
+
     def on_draw(self):
         arcade.start_render()
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
                                       SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
         self.wood_sprite.draw()
-        self.world.wood.control()
-
 
 def main():
     gamewindow()

@@ -52,6 +52,9 @@ class gamewindow(arcade.Window):
                                       SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
         self.wood_sprite.draw()
         self.ball_sprite.draw()
+        arcade.draw_text('BALL LIFE: '+str(self.world.ball_life),
+                         self.width - 200, self.height - 50,
+                         arcade.color.YELLOW, 20)
 
 def main():
     gamewindow()

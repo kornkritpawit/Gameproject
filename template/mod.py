@@ -53,7 +53,6 @@ class World:
     STATE_FROZEN = 1
     STATE_STARTED = 2
     STATE_DEAD = 3
-    BALL_LIFE = 5
     def __init__(self, width, height):
         self.width = width
         self.height = height
@@ -61,6 +60,7 @@ class World:
         self.ball = ball(self, 500, 65)
         self.state = World.STATE_FROZEN
         self.score = 0
+        self.ball_life = 5
 
     def start(self):
         self.state = World.STATE_STARTED
@@ -78,11 +78,18 @@ class World:
     def is_hit(self):
         if self.ball.y-20<=self.wood.y+25 and self.wood.x+125>=self.ball.x>=self.wood.x-125:
             return True
+
     def reset(self):
         if self.ball.y < 0:
-            self.wood = wood(self, 500, 25)
-            self.ball = ball(self, 500, 65)
+            self.wood.x = 500
+            self.ball.x = self.wood.x
+            self.ball.y = 65
+            self.ball.state = ball.STATE_FROZEN
             self.state = World.STATE_FROZEN
+            self.ball.vx = 0
+            self.ball.vy = 0
+            self.ball_life -= 1
+            # self.ball.state =
 
 
     def on_mouse_press(self,x,y):

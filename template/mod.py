@@ -49,6 +49,35 @@ class ball(Model):
                 self.vy = -self.vy
         bounce()
 
+class Brick:
+    def __init__(self, world):
+        self.map = [ '##########',
+                     '##########',
+                     '##########',
+                     '##########',
+                     '##########',
+                    ]
+        self.height = len(self.map)
+        self.width = len(self.map[0])
+        self.init_dot_data()
+
+    def init_dot_data(self):
+        has_dot = {}
+        for r in range(self.height):
+            has_dot[r] = {}
+            for c in range(self.width):
+                has_dot[r][c] = self.map[r][c] == '#'
+        self.has_dot = has_dot
+
+    def remove_dot_at(self, r, c):
+        self.has_dot[r][c] = False
+
+    # def has_wall_at(self, r, c):
+    #     return self.map[r][c] == '#'
+
+    def has_dot_at(self, r, c):
+        return self.has_dot[r][c]
+
 class World:
     STATE_FROZEN = 1
     STATE_STARTED = 2
@@ -59,6 +88,7 @@ class World:
         self.wood = wood(self, 500, 25)
         self.ball = ball(self, 500, 65)
         self.state = World.STATE_FROZEN
+        self.brick = Brick(self)
         self.score = 0
         self.ball_life = 5
 
@@ -119,6 +149,7 @@ class World:
                 # self.ball.vx = -self.ball.vx
                 self.ball.vy = -self.ball.vy
         self.reset()
+
 
 
 

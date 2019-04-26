@@ -2,6 +2,10 @@ import arcade
 from template.mod import World
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
+BLOCK_SIZE = 100
+BLOCK_HEIGHT = 60
+BLOCK_WIDTH = 100
+
 
 
 class ModelSprite(arcade.Sprite):
@@ -28,6 +32,7 @@ class gamewindow(arcade.Window):
         self.background = arcade.load_texture('images/galaxy.jpg')
         self.wood_sprite = ModelSprite('images/wood1.png',model=self.world.wood)
         self.ball_sprite = ModelSprite('images/ball.png',model=self.world.ball)
+        self.brick_drawer = BrickDrawer(self.world.brick)
 
     # def update(self,delta):
 
@@ -50,14 +55,39 @@ class gamewindow(arcade.Window):
         arcade.start_render()
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
                                       SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
+        self.brick_drawer.draw()
         self.wood_sprite.draw()
         self.ball_sprite.draw()
         arcade.draw_text('BALL LIFE: '+str(self.world.ball_life),
                          self.width - 200, self.height - 50,
                          arcade.color.YELLOW, 20)
 
+class BrickDrawer:
+    def __init__(self, brick):
+        self.brick = brick
+        self.width = self.brick.width
+        self.height = self.brick.height
+
+        self.brick_sprite = arcade.Sprite('images/wall.png')
+
+    def get_sprite_position(self, r, c):
+        x = c * BLOCK_WIDTH + (BLOCK_WIDTH // 2);
+        y = r * BLOCK_HEIGHT + (BLOCK_HEIGHT + (BLOCK_HEIGHT // 2))+360
+        return x,y
+    def draw_sprite(self, sprite, r, c):
+        x, y = self.get_sprite_position(r, c)
+        sprite.set_position(x, y)
+        sprite.draw()
+
+    def draw(self):
+        for r in range(self.height):
+            for c in range(self.width):
+                if self.brick.has_dot_at(r, c):
+                    self.draw_sprite(self.brick_sprite, r, c)
+
 def main():
-    gamewindow()
+    window = gamewindow()
+    arcade.set_window(window)
     arcade.run()
 
 

@@ -2,7 +2,6 @@ import arcade
 from template.mod import World
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
-BLOCK_SIZE = 100
 BLOCK_HEIGHT = 60
 BLOCK_WIDTH = 100
 
@@ -28,6 +27,7 @@ class gamewindow(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, 'Bouncing ball')
         self.world = World(SCREEN_WIDTH,SCREEN_HEIGHT)
+        print(self.world.brick.has_dot)
         arcade.set_background_color(arcade.color.PINK)
         self.background = arcade.load_texture('images/galaxy.jpg')
         self.wood_sprite = ModelSprite('images/wood1.png',model=self.world.wood)
@@ -55,7 +55,7 @@ class gamewindow(arcade.Window):
         arcade.start_render()
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
                                       SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
-        self.brick_drawer.draw()
+        pos = self.brick_drawer.draw()
         self.wood_sprite.draw()
         self.ball_sprite.draw()
         arcade.draw_text('BALL LIFE: '+str(self.world.ball_life),
@@ -78,12 +78,17 @@ class BrickDrawer:
         x, y = self.get_sprite_position(r, c)
         sprite.set_position(x, y)
         sprite.draw()
+        return x,y
 
     def draw(self):
+        pos= []
         for r in range(self.height):
             for c in range(self.width):
                 if self.brick.has_dot_at(r, c):
                     self.draw_sprite(self.brick_sprite, r, c)
+
+
+
 
 def main():
     window = gamewindow()

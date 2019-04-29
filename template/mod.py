@@ -1,5 +1,6 @@
 import arcade.key
 import math
+from template.pos import check_brick
 class Model:
     def __init__(self, world, x, y, angle):
         self.world = world
@@ -21,18 +22,31 @@ class wood(Model):
             self.x = 95
         self.x += self.vx
 
+
 class ball(Model):
     STATE_FROZEN = 1
     STATE_STARTED = 2
-    def __init__(self, world, x, y):
+
+    def __init__(self, world, x, y,brick):
         super().__init__(world, x, y, 0)
         self.vx = 0
         self.vy = 0
         self.state = ball.STATE_FROZEN
+        self.brick = brick
+
 
     def is_hit(self, wood):
         if self.y-20<=wood.y+25 and wood.x+125>=self.x>=wood.x-125:
             return True
+    def brick_bounce(self):
+        y,x = check_brick(self.x,self.y)
+        if y==-1 or x == -1:
+            return
+        if self.brick.has_dot[y][x] == True:
+            self.brick.has_dot[y][x] = False
+            print(self.brick.has_dot)
+            return True
+
 
     def update(self,delta):
         if self.state == ball.STATE_FROZEN:
@@ -48,7 +62,8 @@ class ball(Model):
             if self.y>=800:
                 self.vy = -self.vy
         bounce()
-
+        if self.brick_bounce():
+            self.vy = -self.vy
 class Brick:
     def __init__(self, world):
         self.map = [ '##########',
@@ -57,9 +72,31 @@ class Brick:
                      '##########',
                      '##########',
                     ]
+        self.pos_x = [[50, 150, 250, 350, 450, 550, 650, 750, 850, 950],
+         [50, 150, 250, 350, 450, 550, 650, 750, 850, 950],
+         [50, 150, 250, 350, 450, 550, 650, 750, 850, 950],
+         [50, 150, 250, 350, 450, 550, 650, 750, 850, 950],
+         [50, 150, 250, 350, 450, 550, 650, 750, 850, 950]]
+        self.pos_y = [[450, 450, 450, 450, 450, 450, 450, 450, 450, 450],
+         [510, 510, 510, 510, 510, 510, 510, 510, 510, 510],
+         [570, 570, 570, 570, 570, 570, 570, 570, 570, 570],
+         [630, 630, 630, 630, 630, 630, 630, 630, 630, 630],
+         [690, 690, 690, 690, 690, 690, 690, 690, 690, 690]]
+        self.pos = pos = [(50, 450), (150, 450), (250, 450), (350, 450), (450, 450),
+ (550, 450), (650, 450), (750, 450), (850, 450), (950, 450),
+ (50, 510), (150, 510), (250, 510), (350, 510), (450, 510),
+ (550, 510), (650, 510), (750, 510), (850, 510), (950, 510),
+ (50, 570), (150, 570), (250, 570), (350, 570), (450, 570),
+ (550, 570), (650, 570), (750, 570), (850, 570), (950, 570),
+ (50, 630), (150, 630), (250, 630), (350, 630), (450, 630),
+ (550, 630), (650, 630), (750, 630), (850, 630), (950, 630),
+ (50, 690), (150, 690), (250, 690), (350, 690), (450, 690),
+ (550, 690), (650, 690), (750, 690), (850, 690), (950, 690)]
         self.height = len(self.map)
         self.width = len(self.map[0])
         self.init_dot_data()
+
+
 
     def init_dot_data(self):
         has_dot = {}
@@ -68,6 +105,12 @@ class Brick:
             for c in range(self.width):
                 has_dot[r][c] = self.map[r][c] == '#'
         self.has_dot = has_dot
+
+    def init_brick_pos(self,pos):
+        self.pos = pos
+        if self.n<=0:
+            print(self.pos)
+            self.n+=1
 
     def remove_dot_at(self, r, c):
         self.has_dot[r][c] = False
@@ -86,9 +129,10 @@ class World:
         self.width = width
         self.height = height
         self.wood = wood(self, 500, 25)
-        self.ball = ball(self, 500, 65)
         self.state = World.STATE_FROZEN
         self.brick = Brick(self)
+        self.ball = ball(self, 500, 65,self.brick)
+
         self.score = 0
         self.ball_life = 5
 

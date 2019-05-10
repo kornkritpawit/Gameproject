@@ -1,6 +1,8 @@
 import arcade.key
 import math
 from template.pos import check_brick_y
+
+
 class Model:
     def __init__(self, world, x, y, angle):
         self.world = world
@@ -11,10 +13,12 @@ class Model:
     def hit(self, other, hit_size):
         return (abs(self.x - other.x) <= hit_size) and (abs(self.y - other.y) <=hit_size)
 
+
 class wood(Model):
     def __init__(self, world, x, y):
         super().__init__(world, x, y, 0)
         self.vx = 0
+
     def update(self,delta):
         if self.x >= 875:
             self.x = 874
@@ -34,10 +38,10 @@ class ball(Model):
         self.state = ball.STATE_FROZEN
         self.brick = brick
 
-
     def is_hit(self, wood):
         if self.y-20<=wood.y+25 and wood.x+125>=self.x>=wood.x-125:
             return True
+
     def brick_bounce_y(self):
         y,x = check_brick_y(self.x,self.y)
 
@@ -47,20 +51,6 @@ class ball(Model):
             self.brick.has_dot[y][x] = False
             print(self.brick.has_dot)
             return True
-        # elif self.brick.has_dot[y][x] == False:
-        #     if self.brick.has_dot[y+1][x]==True:
-        #         self.brick_bounce_x()
-    # def brick_bounce_x(self):
-    #     y,x,v = check_brick_x(self.x,self.y,self.vx)
-    #     if self.brick.has_dot[y,x]:
-    #         self.brick.has_dot[y,x]=False
-    #         if v == 'n':
-    #             self.vx=-self.vx
-    #         else:
-    #             self.vx=-self.vx
-
-
-
 
     def update(self,delta):
         if self.state == ball.STATE_FROZEN:
@@ -70,6 +60,7 @@ class ball(Model):
                 self.x = 95
         self.x += self.vx
         self.y += self.vy
+
         def bounce():
             if self.x>=1000 or self.x<=0:
                 self.vx = -self.vx
@@ -78,9 +69,9 @@ class ball(Model):
         bounce()
         if self.brick_bounce_y():
             self.vy = -self.vy
-            self.world.score+=100
-        # else:
-        #     self.vx = -self.vx
+            self.world.score += 100
+
+
 class Brick:
     def __init__(self, world):
         self.map = [ '##########',
@@ -92,8 +83,6 @@ class Brick:
         self.height = len(self.map)
         self.width = len(self.map[0])
         self.init_dot_data()
-
-
 
     def init_dot_data(self):
         has_dot = {}
@@ -117,6 +106,7 @@ class Brick:
 
     def has_dot_at(self, r, c):
         return self.has_dot[r][c]
+
 
 class World:
     STATE_FROZEN = 1
@@ -153,6 +143,7 @@ class World:
                 self.reset_game()
             elif key == arcade.key.ENTER:
                 quit()
+
     def is_hit(self):
         if self.ball.y-20<=self.wood.y+25 and self.wood.x+125>=self.ball.x>=self.wood.x-125:
             return True
@@ -167,13 +158,12 @@ class World:
             self.ball.vx = 0
             self.ball.vy = 0
             self.ball_life -= 1
-            # self.ball.state =
+
     def reset_game(self):
         self.score=0
         self.ball_life=5
         del(self.brick.has_dot)
         self.brick.init_dot_data()
-
 
     def on_mouse_press(self,x,y):
         dx = (x - self.ball.x)

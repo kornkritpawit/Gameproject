@@ -6,6 +6,7 @@ BLOCK_HEIGHT = 60
 BLOCK_WIDTH = 100
 text = 'You need to break all bricks to win this game.'
 
+
 class ModelSprite(arcade.Sprite):
     def __init__(self, *args, **kwargs):
         self.model = kwargs.pop('model', None)
@@ -33,8 +34,6 @@ class gamewindow(arcade.Window):
         self.ball_sprite = ModelSprite('images/ball.png',model=self.world.ball)
         self.brick_drawer = BrickDrawer(self.world.brick)
 
-    # def update(self,delta):
-
     def on_key_press(self, key, key_modifiers):
         self.world.on_key_press(key, key_modifiers)
 
@@ -44,11 +43,8 @@ class gamewindow(arcade.Window):
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         self.world.on_mouse_press(x,y)
 
-
-
     def update(self, delta):
         self.world.update(delta)
-
 
     def on_draw(self):
         arcade.start_render()
@@ -78,6 +74,8 @@ class gamewindow(arcade.Window):
                          arcade.color.YELLOW, 20)
         arcade.draw_text('Your score: '+str(self.world.score),0,self.height - 50,
                          arcade.color.WHITE_SMOKE,20)
+
+
 class BrickDrawer:
     def __init__(self, brick):
         self.brick = brick
@@ -90,6 +88,7 @@ class BrickDrawer:
         x = c * BLOCK_WIDTH + (BLOCK_WIDTH // 2);
         y = r * BLOCK_HEIGHT + (BLOCK_HEIGHT + (BLOCK_HEIGHT // 2))+360
         return x,y
+
     def draw_sprite(self, sprite, r, c):
         x, y = self.get_sprite_position(r, c)
         sprite.set_position(x, y)
@@ -97,13 +96,10 @@ class BrickDrawer:
         return x,y
 
     def draw(self):
-        pos= []
         for r in range(self.height):
             for c in range(self.width):
                 if self.brick.has_dot_at(r, c):
                     self.draw_sprite(self.brick_sprite, r, c)
-
-
 
 
 def main():

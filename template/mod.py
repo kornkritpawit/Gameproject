@@ -1,6 +1,6 @@
 import arcade.key
 import math
-from template.pos import check_brick_y
+from pos import check_brick_y
 
 
 class Model:

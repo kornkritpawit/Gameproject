@@ -1,5 +1,5 @@
 import arcade
-from template.mod import World
+from mod import World
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
 BLOCK_HEIGHT = 60
@@ -19,6 +19,7 @@ class ModelSprite(arcade.Sprite):
             self.angle = self.model.angle
 
     def draw(self):
+
         self.sync_with_model()
         super().draw()
 
